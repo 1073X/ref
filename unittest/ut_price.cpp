@@ -123,3 +123,23 @@ TEST(ut_price, division) {
     EXPECT_DOUBLE_EQ(0.05, val);
 }
 
+TEST(ut_price, variant) {
+    using miu::com::type_id;
+    using miu::com::variant;
+
+    auto prc = price { 1.8 };
+    auto var = variant { prc };
+    EXPECT_EQ(price { 1.8 }, var.get<price>().value());
+
+    EXPECT_EQ(price { 123 }, variant { 123 }.get<price>().value());
+    EXPECT_EQ(price { 123.1 }, variant { +"123.1" }.get<price>().value());
+}
+
+TEST(ut_price, to_string) {
+    using miu::com::to_string;
+
+    EXPECT_EQ("2.1", to_string(price { 2.1 }));
+    EXPECT_EQ("23.0011111", to_string(price { 23.0011111 }));
+    EXPECT_EQ("123.0011111", to_string(price { 123.0011111 }));
+    EXPECT_EQ("1234567.1234567", to_string(price { 1234567.1234567 }));
+}
