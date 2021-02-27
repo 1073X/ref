@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cassert>
+#include <com/to_string.hpp>
+#include <com/variant.hpp>
+
 namespace miu::ref {
 
 class price {
@@ -139,3 +143,6 @@ auto operator/(T lhs, miu::ref::price rhs) {
     assert(rhs > 0.0 || rhs < 0.0);
     return miu::ref::price { lhs / static_cast<double>(rhs) };
 }
+
+DEF_VARIANT(miu::ref::price, miu::com::type_id<double>::value);
+DEF_TO_STRING(miu::ref::price);
