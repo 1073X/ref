@@ -129,7 +129,8 @@ TEST(ut_price, variant) {
 
     auto prc = price { 1.8 };
     auto var = variant { prc };
-    EXPECT_EQ(price { 1.8 }, var.get<price>().value());
+    EXPECT_EQ(price { 1.8 }, var.get<price>());
+    EXPECT_EQ("1.8", var.get<std::string>());
 
     EXPECT_EQ(price { 123 }, variant { 123 }.get<price>().value());
     EXPECT_EQ(price { 123.1 }, variant { +"123.1" }.get<price>().value());

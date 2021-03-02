@@ -1,20 +1,14 @@
 
 #include "ref/price.hpp"
 
-namespace miu::com {
-
-template<>
-void miu::com::variant::set<ref::price>(ref::price const& v) {
-    new (_value) ref::price { v };
+DEF_VAR_SET(miu::ref::price) {
+    _id = type_id<double>::value;
+    new (_value) double { v };
 }
 
-template<>
-std::optional<ref::price> miu::com::variant::get<ref::price>() const {
-    auto opt = get<double>();
-    return { opt.value() };
+DEF_VAR_GET(miu::ref::price) {
+    return get<double>().value();
 }
-
-}    // namespace miu::com
 
 DEF_TO_STRING(miu::ref::price) {
     return to_string(static_cast<double>(v));

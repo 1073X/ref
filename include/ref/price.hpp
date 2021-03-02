@@ -144,5 +144,4 @@ auto operator/(T lhs, miu::ref::price rhs) {
     return miu::ref::price { lhs / static_cast<double>(rhs) };
 }
 
-DEF_VARIANT(miu::ref::price, miu::com::type_id<double>::value);
-DEF_TO_STRING(miu::ref::price);
+DEF_VARIANT(miu::ref::price, CUSTOM_TYPE_ID + 32);
