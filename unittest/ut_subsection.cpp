@@ -1,25 +1,27 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/segmap.hpp"
+#include "source/lib/subsection.hpp"
 
-struct ut_segmap : public testing::Test {
-    using segmap = miu::ref::segmap<int32_t, int32_t, 16>;
-    segmap map { std::numeric_limits<int32_t>::lowest(), std::numeric_limits<int32_t>::max(), 1 };
+struct ut_subsection : public testing::Test {
+    using subsection = miu::ref::subsection<int32_t, int32_t, 16>;
+    subsection map { std::numeric_limits<int32_t>::lowest(),
+                     std::numeric_limits<int32_t>::max(),
+                     1 };
 };
 
-TEST_F(ut_segmap, size) {
+TEST_F(ut_subsection, size) {
     auto size = (4 + 4) * 16U;
     EXPECT_EQ(size, sizeof(map));
 }
 
-TEST_F(ut_segmap, defval) {
+TEST_F(ut_subsection, defval) {
     EXPECT_EQ(1U, map.segements());
 
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::min()));
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, add) {
+TEST_F(ut_subsection, add) {
     map.add(1, 100);
 
     EXPECT_EQ(2U, map.segements());
@@ -30,20 +32,20 @@ TEST_F(ut_segmap, add) {
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, confliction) {
+TEST_F(ut_subsection, confliction) {
     map.add(1, 100);
     ASSERT_ANY_THROW(map.add(1, 200));
     ASSERT_NO_THROW(map.add(1, 100));
 }
 
-TEST_F(ut_segmap, overflow) {
-    for (auto i = 0U; i < segmap::max_seg() - 2; i++) {
+TEST_F(ut_subsection, overflow) {
+    for (auto i = 0U; i < subsection::max_lev() - 2; i++) {
         map.add(i, i * 100);
     }
     ASSERT_ANY_THROW(map.add(32, 9));
 }
 
-TEST_F(ut_segmap, add_more) {
+TEST_F(ut_subsection, add_more) {
     map.add(1, 100);
     map.add(10, 200);
     map.add(100, 300);
@@ -59,7 +61,7 @@ TEST_F(ut_segmap, add_more) {
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, disorder) {
+TEST_F(ut_subsection, disorder) {
     map.add(1, 100);
     map.add(100, 300);
     map.add(10, 200);
@@ -75,7 +77,7 @@ TEST_F(ut_segmap, disorder) {
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, merge_backward) {
+TEST_F(ut_subsection, merge_backward) {
     map.add(1, 100);
     map.add(10, 100);
     map.add(100, 300);
@@ -91,7 +93,7 @@ TEST_F(ut_segmap, merge_backward) {
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, merge_forward) {
+TEST_F(ut_subsection, merge_forward) {
     map.add(1, 100);
     map.add(10, 300);
     map.add(100, 300);
@@ -107,8 +109,8 @@ TEST_F(ut_segmap, merge_forward) {
     EXPECT_EQ(1, map.get(std::numeric_limits<int32_t>::max()));
 }
 
-TEST_F(ut_segmap, locate) {
-    for (auto i = 0U; i < segmap::max_seg() - 2; i++) {
+TEST_F(ut_subsection, locate) {
+    for (auto i = 0U; i < subsection::max_lev() - 2; i++) {
         map.add(i, i * 100);
     }
 
