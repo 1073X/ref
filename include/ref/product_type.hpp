@@ -22,6 +22,9 @@ enum struct product_type : uint16_t {
     MAX
 };
 
-}
+extern bool is_options(product_type);
+extern bool is_derivatives(product_type);
+
+}    // namespace miu::ref
 
 DEF_VARIANT(miu::ref::product_type, CUSTOM_TYPE_ID + 35);
