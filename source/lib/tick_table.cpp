@@ -8,7 +8,7 @@ tick_table::tick_table()
 
 int32_t tick_table::precision() const {
     auto max_exponent = 0;
-    for (auto i = 1U; i < max_seg(); i++) {
+    for (auto i = 1U; i < max_lev(); i++) {
         auto [man, exponent] = vals()[i - 1];
         max_exponent         = std::max(exponent, max_exponent);
     }
@@ -38,7 +38,7 @@ price tick_table::up(price prc, int32_t n, uint32_t i) const {
         return -dn(-val, n);
     }
 
-    if (i >= max_seg()) {
+    if (i >= max_lev()) {
         return price::max();
     }
 
@@ -67,7 +67,7 @@ price tick_table::dn(price prc, int32_t n, uint32_t i) const {
         return -up(-val, n);
     }
 
-    assert(i < max_seg());
+    assert(i < max_lev());
 
     double key = keys()[i];
     if (val > key) {
@@ -92,7 +92,7 @@ int32_t tick_table::to_tick_count(price val) const {
     }
 
     price cnt = 0.0;    // prevent int/double casting
-    for (auto i = 1U; i < max_seg(); i++) {
+    for (auto i = 1U; i < max_lev(); i++) {
         auto [mantissa, exponent] = vals()[i - 1];
         auto prev_key             = keys()[i - 1];
 

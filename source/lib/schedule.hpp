@@ -4,13 +4,13 @@
 #include <time/daytime.hpp>
 #include <time/stamp.hpp>
 
-#include "ref/status.hpp"
+#include "ref/trading_status.hpp"
 
-#include "segmap.hpp"
+#include "subsection.hpp"
 
 namespace miu::ref {
 
-using schedule_base = segmap<uint16_t, status, 16>;
+using schedule_base = subsection<uint16_t, trading_status, 16>;
 class schedule : public schedule_base {
   public:
     static uint16_t const MIN_KEY = 0;          // 00:00:00
@@ -18,11 +18,11 @@ class schedule : public schedule_base {
 
   public:
     schedule()
-        : schedule_base(MIN_KEY, MAX_KEY, status::CLOSE) {}
+        : schedule_base(MIN_KEY, MAX_KEY, trading_status::CLOSE) {}
 
     auto operator==(schedule const& lhs) const { return schedule_base::operator==(lhs); }
 
-    auto add(time::daytime time, status status) {
+    auto add(time::daytime time, trading_status status) {
         using namespace std::chrono;
 
         auto sec = duration_cast<minutes>(time.time_since_epoch());

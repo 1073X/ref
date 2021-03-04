@@ -123,25 +123,9 @@ static_assert(sizeof(price) == sizeof(double));
 
 }    // namespace miu::ref
 
-template<typename T>
-auto operator+(T lhs, miu::ref::price rhs) {
-    return rhs + lhs;
-}
-
-template<typename T>
-auto operator-(T lhs, miu::ref::price rhs) {
-    return -rhs + lhs;
-}
-
-template<typename T>
-auto operator*(T lhs, miu::ref::price rhs) {
-    return rhs * lhs;
-}
-
-template<typename T>
-auto operator/(T lhs, miu::ref::price rhs) {
-    assert(rhs > 0.0 || rhs < 0.0);
-    return miu::ref::price { lhs / static_cast<double>(rhs) };
-}
+miu::ref::price operator+(double, miu::ref::price);
+miu::ref::price operator-(double, miu::ref::price);
+miu::ref::price operator*(double, miu::ref::price);
+miu::ref::price operator/(double, miu::ref::price);
 
 DEF_VARIANT(miu::ref::price, CUSTOM_TYPE_ID + 32);
