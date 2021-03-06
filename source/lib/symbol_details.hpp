@@ -6,6 +6,8 @@
 namespace miu::ref::details {
 
 static uint32_t constexpr base_year = 2019;
+static double const max_strike      = std::pow(2, 24);
+static char constexpr delimiter { '/' };
 
 union layout {
     uint64_t value { 0 };
@@ -42,21 +44,55 @@ auto create_layout(exchange_type exchange, product_type product) {
     return lay;
 }
 
+uint64_t make_strike(double strike) {
+    auto val = strike;
+
+    if (val > max_strike) {
+        FATAL_ERROR<std::overflow_error>("ref SYM strike price overflow", strike);
+    }
+
+    while (val * 10 < max_strike) {
+        val *= 10;
+    }
+
+    if (std::round(val) < val) {
+        FATAL_ERROR<std::overflow_error>("ref SYM strike price overflow", strike);
+    }
+
+    return std::round(val);
+}
+
 template<typename T>
 std::string contract(T t) {
-    std::string ret;
-
-    auto mon = t.maturity_mon;
+    char buf[8] {};
+    uint32_t mon = t.maturity_mon;
     if (mon > 0) {
-        auto yrs = (t.maturity_yrs + details::base_year) % 10;
-        ret      = "FGHJKMNQUVXZ"[mon - 1] + com::to_string(yrs);
+        auto yrs = (t.maturity_yrs + base_year) % 100;
+        std::snprintf(buf, sizeof(buf), "%02u%02u", yrs, mon);
     }
-    return ret;
+    return buf;
+}
+
+template<typename T>
+void set_maturity(T& t, time::date val) {
+    if (val < symbol::min_maturity()) {
+        FATAL_ERROR<std::underflow_error>(
+            "ref SYM maturity underflow", val, "<", symbol::min_maturity());
+    }
+
+    if (val > symbol::max_maturity()) {
+        FATAL_ERROR<std::overflow_error>(
+            "ref SYM maturity overflow", val, ">", symbol::max_maturity());
+    }
+
+    auto [yrs, mon, day] = val.ytd();
+    t.maturity_yrs       = yrs - base_year;
+    t.maturity_mon       = mon;
 }
 
 uint64_t encode_name(std::string_view str, uint32_t bytes) {
     if (str.size() > bytes) {
-        FATAL_ERROR<std::overflow_error>("name overflow", str, ">", bytes);
+        FATAL_ERROR<std::overflow_error>("ref SYM name overflow", str, ">", bytes);
     }
 
     uint64_t val { 0 };
@@ -66,19 +102,74 @@ uint64_t encode_name(std::string_view str, uint32_t bytes) {
     return val;
 }
 
-template<typename T>
-void set_maturity(T& t, time::date val) {
-    if (val < symbol::min_maturity()) {
-        FATAL_ERROR<std::underflow_error>("maturity underflow", val, "<", symbol::min_maturity());
+symbol from_string(std::string_view str) noexcept try {
+    auto make_maturity = [](std::string_view str) -> time::date {
+        if (str.size() != 4) {
+            FATAL_ERROR<std::invalid_argument>("ref SYM invalid maturity");
+        }
+        auto c2i = [&](auto ch) {
+            if (!std::isdigit(ch)) {
+                FATAL_ERROR<std::invalid_argument>("ref SYM invalid maturity");
+            }
+            return ch - '0';
+        };
+
+        auto yrs = 2000 + c2i(str[0]) * 10 + c2i(str[1]);
+        auto mon = c2i(str[2]) * 10 + c2i(str[3]);
+        return { yrs, mon, 1 };
+    };
+
+    std::istringstream ss { str.data() };
+    auto next_part = [&ss]() {
+        std::string seg;
+        std::getline(ss, seg, delimiter);
+        return seg;
+    };
+
+    auto exchange = com::val_to_enum<exchange_type>(next_part());
+    if (exchange_type::MAX == exchange) {
+        FATAL_ERROR<std::invalid_argument>("ref SYM invalid exchange");
     }
 
-    if (val > symbol::max_maturity()) {
-        FATAL_ERROR<std::overflow_error>("maturity overflow", val, ">", symbol::max_maturity());
+    auto type = com::val_to_enum<product_type>(next_part());
+    if (product_type::MAX == type) {
+        FATAL_ERROR<std::invalid_argument>("ref SYM invalid type");
     }
 
-    auto [yrs, mon, day] = val.ytd();
-    t.maturity_yrs       = yrs - details::base_year;
-    t.maturity_mon       = mon;
+    auto name = next_part();
+    if (name.empty()) {
+        FATAL_ERROR<std::invalid_argument>("ref SYM missing name");
+    }
+
+    switch (type) {
+    case product_type::CALL:
+    case product_type::PUT: {
+        auto strike   = next_part();
+        auto contract = next_part();
+        if (strike.empty() ^ contract.empty()) {
+            FATAL_ERROR<std::invalid_argument>("ref SYM invalid option");
+        }
+
+        if (!strike.empty() && !contract.empty()) {
+            auto maturity = make_maturity(contract);
+            return { exchange, type, name, make_strike(std::stod(strike)), maturity };
+        }
+    } break;
+    case product_type::FUTURE: {
+        auto contract = next_part();
+        if (!contract.empty()) {
+            return { exchange, name, make_maturity(contract) };
+        }
+    } break;
+    default:
+        break;
+    }
+
+    return { exchange, type, name };
+
+} catch (std::exception const& err) {
+    log::error(err.what(), '[', str, ']');
+    return {};
 }
 
 }    // namespace miu::ref::details

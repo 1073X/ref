@@ -19,6 +19,7 @@ class symbol {
 
   public:
     symbol(uint64_t = 0);
+    symbol(std::string_view);
 
     // equity
     symbol(exchange_type, product_type, std::string_view name);
@@ -27,15 +28,18 @@ class symbol {
     // options
     symbol(exchange_type, product_type, std::string_view name, price strike, time::date);
 
-    auto value() const { return _value; }
+    uint64_t val() const { return _value; }
+    std::string str() const;
 
     auto operator!() const { return !_value; }
     operator bool() const { return !operator!(); }
 
+    auto operator!=(symbol rhs) const { return _value != rhs._value; }
+    auto operator==(symbol rhs) const { return _value == rhs._value; }
+
     product_type product() const;
     exchange_type exchange() const;
     std::string name() const;
-    std::string str() const;
 
   private:
     uint64_t _value;

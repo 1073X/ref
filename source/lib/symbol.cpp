@@ -1,6 +1,9 @@
 
 #include "ref/symbol.hpp"
 
+#include <log/log.hpp>
+#include <sstream>
+
 #include "symbol_details.hpp"
 
 namespace miu::ref {
@@ -15,6 +18,10 @@ time::date symbol::max_maturity() {
 
 symbol::symbol(uint64_t v)
     : _value(v) {
+}
+
+symbol::symbol(std::string_view str)
+    : symbol(details::from_string(str)) {
 }
 
 symbol::symbol(exchange_type exchange, product_type product, std::string_view name) {
@@ -51,24 +58,15 @@ symbol::symbol(exchange_type exchange,
                time::date maturity) {
     if (product_type::CALL != product && product_type::PUT != product) {
         FATAL_ERROR<std::invalid_argument>(
-            "not options", exchange, product, name, strike, maturity);
+            "ref SYM not options", exchange, product, name, strike, maturity);
     }
 
-    static auto max_strike = std::pow(2, 24);
-    double strike_val      = strike;
-    if (strike_val > max_strike) {
-        FATAL_ERROR<std::overflow_error>(
-            "strike overflow", exchange, product, name, strike, maturity);
-    }
+    auto layout = details::create_layout(exchange, product);
 
-    auto layout     = details::create_layout(exchange, product);
+    layout.opt.strike = details::make_strike(strike);
+
     layout.opt.name = details::encode_name(name, 3);
     details::set_maturity(layout.opt, maturity);
-
-    while (strike_val * 10 < max_strike) {
-        strike_val *= 10;
-    }
-    layout.opt.strike = std::round(strike_val);
 
     _value = layout.value;
 }
@@ -109,22 +107,24 @@ std::string symbol::name() const {
 }
 
 std::string symbol::str() const {
+    static const com::strcat::delimiter delimiter { { details::delimiter } };
+
     auto layout = details::layout { _value };
 
-    auto ret = com::strcat { exchange(), product(), name() }.str();
+    auto ret = com::strcat { exchange(), product(), name(), delimiter }.str();
     switch (product()) {
     case product_type::PUT:
     case product_type::CALL: {
         auto contract = details::contract(layout.opt);
         if (!contract.empty()) {
-            ret = com::strcat { ret, (uint64_t)layout.opt.strike, contract }.str();
+            ret = com::strcat { ret, (uint64_t)layout.opt.strike, contract, delimiter }.str();
         }
     } break;
 
     case product_type::FUTURE: {
         auto contract = details::contract(layout.fut);
         if (!contract.empty()) {
-            ret = com::strcat { ret, contract }.str();
+            ret = com::strcat { ret, contract, delimiter }.str();
         }
     } break;
 
@@ -137,21 +137,3 @@ std::string symbol::str() const {
 
 }    // namespace miu::ref
 
-DEF_VAR_SET(miu::ref::symbol) {
-    new (_value) ref::symbol { v };
-}
-
-DEF_VAR_GET(miu::ref::symbol) {
-    switch (id()) {
-    case type_id<ref::symbol>::value:
-        return *(ref::symbol const*)_value;
-    case type_id<uint64_t>::value:
-        return *(uint64_t const*)_value;
-    default:
-        return std::nullopt;
-    }
-}
-
-DEF_TO_STRING(miu::ref::symbol) {
-    return v.str();
-}
