@@ -4,7 +4,7 @@
 
 namespace miu::ref {
 
-enum struct trading_status : uint16_t {
+enum struct phase_type : uint16_t {
     UNDEF = 0,
 
     AUCTION,
@@ -18,4 +18,4 @@ enum struct trading_status : uint16_t {
 
 }
 
-DEF_VARIANT(miu::ref::trading_status, CUSTOM_TYPE_ID + 33);
+DEF_VARIANT(miu::ref::phase_type, CUSTOM_TYPE_ID + 33);

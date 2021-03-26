@@ -24,10 +24,10 @@ symbol::symbol(std::string_view str)
     : symbol(details::from_string(str)) {
 }
 
-symbol::symbol(exchange_type exchange, product_type product, std::string_view name) {
-    auto layout = details::create_layout(exchange, product);
+symbol::symbol(exchange_type exchange, product_type type, std::string_view name) {
+    auto layout = details::create_layout(exchange, type);
 
-    switch (product) {
+    switch (type) {
     case product_type::PUT:
     case product_type::CALL:
         layout.opt.name = details::encode_name(name, 3);
@@ -52,16 +52,16 @@ symbol::symbol(exchange_type exchange, std::string_view name, time::date maturit
 }
 
 symbol::symbol(exchange_type exchange,
-               product_type product,
+               product_type type,
                std::string_view name,
                price strike,
                time::date maturity) {
-    if (product_type::CALL != product && product_type::PUT != product) {
+    if (product_type::CALL != type && product_type::PUT != type) {
         FATAL_ERROR<std::invalid_argument>(
-            "ref SYM not options", exchange, product, name, strike, maturity);
+            "ref SYM not options", exchange, type, name, strike, maturity);
     }
 
-    auto layout = details::create_layout(exchange, product);
+    auto layout = details::create_layout(exchange, type);
 
     layout.opt.strike = details::make_strike(strike);
 
@@ -71,9 +71,9 @@ symbol::symbol(exchange_type exchange,
     _value = layout.value;
 }
 
-product_type symbol::product() const {
+product_type symbol::type() const {
     auto layout = details::layout { _value };
-    return com::val_to_enum<product_type>(layout.opt.product);
+    return com::val_to_enum<product_type>(layout.opt.type);
 }
 
 exchange_type symbol::exchange() const {
@@ -90,7 +90,7 @@ std::string symbol::name() const {
     };
 
     auto layout = details::layout { _value };
-    switch (product()) {
+    switch (type()) {
     case product_type::PUT:
     case product_type::CALL:
         decode_name(layout.opt.name, 3);
@@ -111,8 +111,8 @@ std::string symbol::str() const {
 
     auto layout = details::layout { _value };
 
-    auto ret = com::strcat { exchange(), product(), name(), delimiter }.str();
-    switch (product()) {
+    auto ret = com::strcat { exchange(), type(), name(), delimiter }.str();
+    switch (type()) {
     case product_type::PUT:
     case product_type::CALL: {
         auto contract = details::contract(layout.opt);

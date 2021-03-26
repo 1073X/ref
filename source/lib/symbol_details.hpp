@@ -1,5 +1,7 @@
 #pragma once
 
+#include <time/date.hpp>
+
 #include "ref/exchange_type.hpp"
 #include "ref/product_type.hpp"
 
@@ -17,7 +19,7 @@ union layout {
         uint64_t strike       : 24;
         uint64_t maturity_yrs : 3;    // can represent the 8 years since base_year
         uint64_t maturity_mon : 4;
-        uint64_t product      : 4;
+        uint64_t type         : 4;
         uint64_t exchange     : 8;
     } opt;
 
@@ -25,22 +27,22 @@ union layout {
         uint64_t name         : 45;    // 6 chars
         uint64_t maturity_yrs : 3;
         uint64_t maturity_mon : 4;
-        uint64_t product      : 4;
+        uint64_t type         : 4;
         uint64_t exchange     : 8;
     } fut;
 
     struct {
         uint64_t name     : 52;    // 7 chars
-        uint64_t product  : 4;
+        uint64_t type     : 4;
         uint64_t exchange : 8;
     } gen;
 };
 static_assert(sizeof(uint64_t) == sizeof(layout));
 
-auto create_layout(exchange_type exchange, product_type product) {
+auto create_layout(exchange_type exchange, product_type type) {
     layout lay;
     lay.gen.exchange = static_cast<uint64_t>(exchange) & 0xFF;
-    lay.gen.product  = static_cast<uint64_t>(product) & 0x0F;
+    lay.gen.type     = static_cast<uint64_t>(type) & 0x0F;
     return lay;
 }
 
@@ -173,4 +175,3 @@ symbol from_string(std::string_view str) noexcept try {
 }
 
 }    // namespace miu::ref::details
-

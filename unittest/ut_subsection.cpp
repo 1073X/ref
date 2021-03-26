@@ -125,4 +125,3 @@ TEST_F(ut_subsection, locate) {
     EXPECT_EQ(std::make_tuple(std::numeric_limits<int32_t>::max(), 1),
               map.locate(std::numeric_limits<int32_t>::max()));
 }
-

@@ -30,4 +30,3 @@ miu::ref::price operator/(double lhs, miu::ref::price rhs) {
     assert(rhs > 0.0 || rhs < 0.0);
     return miu::ref::price { lhs / static_cast<double>(rhs) };
 }
-

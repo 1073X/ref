@@ -17,4 +17,3 @@ TEST(ut_decimal, to_string) {
     decimal dec { 1, 2 };
     EXPECT_EQ("1/2", miu::com::to_string(dec));
 }
-
