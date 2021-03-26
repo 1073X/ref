@@ -37,8 +37,10 @@ class symbol {
     auto operator!=(symbol rhs) const { return _value != rhs._value; }
     auto operator==(symbol rhs) const { return _value == rhs._value; }
 
-    product_type product() const;
+    auto operator<(symbol rhs) const { return _value < rhs._value; }
+
     exchange_type exchange() const;
+    product_type type() const;
     std::string name() const;
 
   private:

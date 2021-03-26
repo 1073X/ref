@@ -13,4 +13,3 @@ TEST(ut_exchange_type, variant) {
     EXPECT_EQ(exchange_type::HKEX, var.get<exchange_type>());
     EXPECT_EQ("HKEX", var.get<std::string>());
 }
-

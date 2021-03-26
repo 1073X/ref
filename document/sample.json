@@ -1,0 +1,72 @@
+{
+    "instruments": {
+        "DCE/CALL/XYZ": [
+            {
+                "maturity": "20210324",
+                "mkt_code": "general_code",
+                "strike": 1.0
+            }
+        ],
+        "SHFE/FUTURE/CU": [
+            {
+                "maturity": "20211016",
+                "mkt_code": "cu2110",
+                "trd_code": "CUV1"
+            },
+            {
+                "maturity": "20211116",
+                "mkt_code": "cu2111",
+                "trd_code": "CUX1"
+            }
+        ],
+        "SSE/STOCK/STK": [
+            {
+                "mkt_code": "mkt_stk01",
+                "name": "STOCK01",
+                "trd_code": "trd_stk01"
+            }
+        ]
+    },
+    "schedules": {
+        "th01": {
+            "00:00:00": "OPEN",
+            "03:00:00": "CLOSE",
+            "09:00:00": "OPEN",
+            "15:00:00": "CLOSE",
+            "21:00:00": "OPEN"
+        }
+    },
+    "tiktables": {
+        "tk01": {
+            "0.0": 0.01,
+            "1.0": 0.1,
+            "5.0": 0.5
+        },
+        "tk_0.2": {
+            "0.0": 0.2
+        }
+    },
+    "underlyings": {
+        "DCE/CALL/XYZ": {
+            "currency": "CNH",
+            "lot_size": 1,
+            "multiplier": 1,
+            "schedule": "th01",
+            "tiktable": "tk_0.2"
+        },
+        "SHFE/FUTURE/CU": {
+            "currency": "CNH",
+            "lot_size": 1,
+            "multiplier": 25,
+            "schedule": "th01",
+            "tiktable": "tk01"
+        },
+        "SSE/STOCK/STK": {
+            "currency": "CNH",
+            "lot_size": 100,
+            "multiplier": 1,
+            "schedule": "th01",
+            "tiktable": "tk01"
+        }
+    }
+}

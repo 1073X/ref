@@ -1,51 +1,48 @@
 #pragma once
 
-#include "underlying.hpp"
+#include <time/daytime.hpp>
+
+#include "currency_type.hpp"
+#include "phase_type.hpp"
+#include "symbol.hpp"
 
 namespace miu::ref {
 
-class instrument : public referential {
+class layout;
+
+class instrument {
   public:
-    // equities
-    instrument(uint16_t id, underlying const& prod, std::string_view name)
-        : instrument(id, prod.id(), prod.exchange(), prod.product(), name) {
-        assert(!is_derivatives(prod.product()) && "not equity");
-    }
-    // futures
-    instrument(uint16_t id, underlying const& cls, time::date maturity)
-        : instrument(id, cls.id(), cls.exchange(), cls.name(), maturity) {
-        assert(product_type::FUTURE == cls.product() && "not future");
-        _maturity = maturity;
-    }
-    // options
-    instrument(uint16_t id, underlying const& cls, price strike, time::date maturity)
-        : instrument(id, cls.id(), cls.exchange(), cls.product(), cls.name(), strike, maturity) {
-        assert(is_options(cls.product()) && "not options");
-        _maturity = maturity;
-        _strike   = strike;
-    }
+    instrument() = default;
+    instrument(layout const*, uint16_t id);
+
+    auto operator!() const { return !_layout; }
+    operator bool() const { return !operator!(); }
 
     auto id() const { return _id; }
-    auto uid() const { return _uid; }
 
-    auto maturity() const { return _maturity; }
-    auto strike_price() const { return _strike; }
+    class symbol symbol() const;
+    exchange_type exchange() const;
+    product_type type() const;
+    std::string name() const;
+
+    std::string_view mkt_code() const;
+    std::string_view trd_code() const;
+
+    currency_type currency() const;
+    int32_t lot_size() const;
+    int32_t multiplier() const;
+
+    time::date maturity() const;
+    price strike_price() const;
+
+    price tick_up(price, int32_t = 1) const;
+    price tick_dn(price, int32_t = 1) const;
+
+    phase_type determine(time::daytime) const;
 
   private:
-    template<typename... ARGS>
-    instrument(uint16_t id, uint16_t uid, ARGS&&... args)
-        : referential(std::forward<ARGS>(args)...) {
-        _id  = id;
-        _uid = uid;
-    }
-
-  private:
-    price _strike { 0 };
-    time::date _maturity { symbol::min_maturity() };
-    uint16_t _id;
-    uint16_t _uid;    // underlying id
-    uint16_t _paddings[4];
+    layout const* _layout { nullptr };
+    uint16_t const _id { 0 };
 };
-static_assert(CACHE_LINE == sizeof(instrument));
 
 }    // namespace miu::ref

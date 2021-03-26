@@ -15,7 +15,7 @@ enum struct currency_type : uint16_t {
     CNH,
     EUR,
     GBP,
-    GBp,    // Britain Pence
+    GBp,    // NOLINT: Britain Pence
     AUD,
 
     MAX

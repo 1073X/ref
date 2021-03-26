@@ -16,4 +16,3 @@ TEST(ut_currency_type, variant) {
 
     EXPECT_EQ(currency_type::USD, variant { +"USD" }.get<currency_type>());
 }
-

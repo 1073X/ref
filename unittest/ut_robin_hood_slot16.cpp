@@ -1,23 +1,20 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/map128.hpp"
+#include "source/lib/robin_hood_slot.hpp"
 
-struct hash {
-    auto operator()(uint64_t const (&key)[2]) const { return key[0]; }
-};
+using slot_type = miu::ref::robin_hood_slot<uint64_t[2], 16>;
+static_assert(sizeof(slot_type) == 32);
 
-using map_type = miu::ref::map128<uint64_t[2], hash>;
-
-TEST(ut_map128_slot, key) {
+TEST(ut_robin_hoold_slot16, key) {
     uint64_t raw[2] { 1, 2 };
-    auto key = map_type::key { raw };
+    auto key = slot_type::key_type { raw };
 
     EXPECT_TRUE(key == raw);
     EXPECT_FALSE(key != raw);
 }
 
-TEST(ut_map128_slot, default) {
-    auto slot = map_type::slot {};
+TEST(ut_robin_hoold_slot16, default) {
+    auto slot = slot_type {};
 
     uint64_t key[2] { 0, 0 };
     EXPECT_EQ(slot.key(), key);
@@ -27,17 +24,17 @@ TEST(ut_map128_slot, default) {
     EXPECT_FALSE(slot.used());
 }
 
-TEST(ut_map128_slot, create) {
+TEST(ut_robin_hoold_slot16, create) {
     uint64_t key[2] { 1, 2 };
-    auto slot = map_type::slot { key, 1 };
+    auto slot = slot_type { key, 1 };
 
     EXPECT_EQ(1U, slot.val());
     EXPECT_EQ(slot.key(), key);
     EXPECT_TRUE(slot.used());
 }
 
-TEST(ut_map128_slot, psl) {
-    auto slot = map_type::slot { { 1, 2 }, 1 };
+TEST(ut_robin_hoold_slot16, psl) {
+    auto slot = slot_type { { 1, 2 }, 1 };
     EXPECT_EQ(1, slot.psl());
 
     slot.inc_psl();

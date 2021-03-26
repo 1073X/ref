@@ -14,7 +14,7 @@ TEST(ut_symbol, default) {
     EXPECT_EQ(0U, sym.val());
 
     EXPECT_EQ(exchange_type::UNDEF, sym.exchange());
-    EXPECT_EQ(product_type::UNDEF, sym.product());
+    EXPECT_EQ(product_type::UNDEF, sym.type());
 
     EXPECT_FALSE(sym);
     EXPECT_TRUE(!sym);
@@ -32,7 +32,7 @@ TEST(ut_symbol, equility) {
 TEST(ut_symbol, options) {
     symbol sym { exchange_type::SSE, product_type::CALL, "AB", 1.2, date { 2021, 3, 3 } };
     EXPECT_EQ(exchange_type::SSE, sym.exchange());
-    EXPECT_EQ(product_type::CALL, sym.product());
+    EXPECT_EQ(product_type::CALL, sym.type());
     EXPECT_EQ("AB", sym.name());
     EXPECT_EQ("SSE/CALL/AB/12000000/2103", sym.str());
 
@@ -51,7 +51,7 @@ TEST(ut_symbol, options) {
 TEST(ut_symbol, futures) {
     symbol sym { exchange_type::CME, "ABCDEF", date { 2021, 3, 3 } };
     EXPECT_EQ(exchange_type::CME, sym.exchange());
-    EXPECT_EQ(product_type::FUTURE, sym.product());
+    EXPECT_EQ(product_type::FUTURE, sym.type());
     EXPECT_EQ("ABCDEF", sym.name());
     EXPECT_EQ("CME/FUTURE/ABCDEF/2103", sym.str());
 
@@ -115,4 +115,3 @@ TEST(ut_symbol, variant) {
 
     EXPECT_EQ(sym.str(), variant { sym }.get<std::string>().value());
 }
-

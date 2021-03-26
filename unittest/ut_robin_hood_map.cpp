@@ -1,18 +1,20 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/map128.hpp"
+#include "source/lib/robin_hood_map.hpp"
 
 struct hash {
     auto operator()(uint64_t const (&key)[2]) const { return key[0]; }
 };
 
-using map_type = miu::ref::map128<uint64_t[2], hash>;
+using map_type = miu::ref::robin_hood_map<uint64_t[2], hash>;
 
-TEST(ut_map128, size) {
-    EXPECT_EQ(sizeof(map_type::slot), sizeof(map_type));
+TEST(ut_robin_hood_map, size) {
+    EXPECT_EQ(sizeof(map_type::slot_type), sizeof(map_type));
+
+    EXPECT_EQ(sizeof(map_type::slot_type) * 32, map_type::resolve_size(31));
 }
 
-TEST(ut_map128, create) {
+TEST(ut_robin_hood_map, create) {
     char buf[32 * 9] {};
     auto map = map_type::make(buf, sizeof(buf));
     ASSERT_NE(nullptr, map);
@@ -25,7 +27,7 @@ TEST(ut_map128, create) {
     EXPECT_EQ(0U, map2->size());
 }
 
-TEST(ut_map128, insert_and_lookup) {
+TEST(ut_robin_hood_map, insert_and_lookup) {
     char buf[32 * 9] {};
     auto map = map_type::make(buf, sizeof(buf));
 
@@ -47,7 +49,7 @@ TEST(ut_map128, insert_and_lookup) {
     EXPECT_EQ(-1U, map->lookup(key4));
 }
 
-TEST(ut_map128, collision) {
+TEST(ut_robin_hood_map, collision) {
     char buf[32 * 9] {};
     auto map = map_type::make(buf, sizeof(buf));
 
@@ -66,7 +68,7 @@ TEST(ut_map128, collision) {
     EXPECT_EQ(3U, map->lookup(key3));
 }
 
-TEST(ut_map128, collision_swap) {
+TEST(ut_robin_hood_map, collision_swap) {
     char buf[32 * 9] {};
     auto map = map_type::make(buf, sizeof(buf));
 
@@ -88,7 +90,7 @@ TEST(ut_map128, collision_swap) {
     EXPECT_EQ(4U, map->lookup(key4));
 }
 
-TEST(ut_map128, wrapping) {
+TEST(ut_robin_hood_map, wrapping) {
     char buf[32 * 9] {};
     auto map = map_type::make(buf, sizeof(buf));
 
