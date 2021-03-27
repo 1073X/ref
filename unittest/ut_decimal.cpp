@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/decimal.hpp"
+#include "source/lib/ref/decimal.hpp"
 
 using miu::ref::decimal;
 

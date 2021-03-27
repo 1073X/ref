@@ -1,35 +1,14 @@
 
 #include "ref/database.hpp"
 
-#include <fstream>
-
-#include "json_source.hpp"
 #include "layout.hpp"
 
 namespace miu::ref {
 
-database database::load(std::filesystem::path const& file) {
-    auto json   = com::json::parse(std::ifstream(file));
-    auto source = json_source { json };
-
-    auto instrument_cap = source.instrument_count() + 4;
-    auto tiktable_cap   = source.tiktable_count() + 4;
-    auto schedule_cap   = source.schedule_count() + 4;
-    auto buffer_size    = layout::resolve_size(instrument_cap, tiktable_cap, schedule_cap);
-
-    std::string name = file.stem();
-    auto buf         = shm::buffer { { name, "ref" }, buffer_size };
-
-    auto layout = layout::make(buf.data(), name, instrument_cap, tiktable_cap, schedule_cap);
-    source.fill(layout);
-
-    return { std::move(buf) };
-}
-
 database database::open(std::string_view name, shm::mode mode) {
     auto buf = shm::buffer { { name, "ref" }, mode };
     // TBD: verify database
-    return { std::move(buf) };
+    return database { std::move(buf) };
 }
 
 database::database(shm::buffer&& buf)

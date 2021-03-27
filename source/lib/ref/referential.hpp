@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>    // std::strncpy
+
 #include "ref/symbol.hpp"
 
 namespace miu::ref {

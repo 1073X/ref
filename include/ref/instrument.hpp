@@ -42,7 +42,7 @@ class instrument {
 
   private:
     layout const* _layout { nullptr };
-    uint16_t const _id { 0 };
+    uint16_t _id { 0 };
 };
 
 }    // namespace miu::ref

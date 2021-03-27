@@ -2,8 +2,9 @@
 
 #include <log/log.hpp>
 
+#include "source/lib/ref/layout.hpp"
+
 #include "json_reader.hpp"
-#include "layout.hpp"
 
 namespace miu::ref {
 
@@ -110,7 +111,7 @@ class json_source {
     }
 
     auto fill(underlying_impl* buf,
-              uint32_t len,
+              uint32_t /*len*/,
               id_map<std::string> const& tiktable_ids,
               id_map<std::string> const& schedule_ids) const {
         id_map<symbol> ids;
@@ -197,7 +198,7 @@ class json_source {
 
   private:
     template<typename T>
-    id_map<std::string> fill(T* buf, uint32_t len, std::string const& name) const {
+    id_map<std::string> fill(T* buf, uint32_t /*len*/, std::string const& name) const {
         id_map<std::string> ids;
         for (auto const& [key, val] : _json[name].items()) {
             assert(val.is_object());    // TBD: verify structure

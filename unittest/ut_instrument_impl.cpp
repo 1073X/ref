@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/instrument_impl.hpp"
+#include "source/lib/ref/instrument_impl.hpp"
 
 using namespace miu::ref;
 using miu::time::date;
@@ -30,6 +30,26 @@ TEST(ut_instrument_impl, general) {
     EXPECT_STREQ("mkt_code", inst.mkt_code().value);
 }
 
+TEST(ut_instrument_impl, general_underlying) {
+    underlying_impl prod { exchange_type::SSE, product_type::STOCK, "stock" };
+    prod.set_currency(currency_type::USD);
+    prod.set_lot_size(10);
+    prod.set_multiplier(100);
+    prod.set_tiktable_id(1);
+    prod.set_schedule_id(2);
+    instrument_impl inst { prod, "name" };
+
+    auto underlying = inst.underlying();
+    EXPECT_EQ("name", underlying.name());
+    EXPECT_EQ(prod.type(), underlying.type());
+    EXPECT_EQ(prod.exchange(), underlying.exchange());
+    EXPECT_EQ(prod.currency(), underlying.currency());
+    EXPECT_EQ(prod.lot_size(), underlying.lot_size());
+    EXPECT_EQ(prod.multiplier(), underlying.multiplier());
+    EXPECT_EQ(prod.tiktable_id(), underlying.tiktable_id());
+    EXPECT_EQ(prod.schedule_id(), underlying.schedule_id());
+}
+
 TEST(ut_instrument_impl, future) {
     underlying_impl prod { exchange_type::CFFEX, product_type::FUTURE, "abc" };
     prod.set_lot_size(100);
@@ -48,6 +68,26 @@ TEST(ut_instrument_impl, future) {
     EXPECT_EQ(product_type::FUTURE, inst.type());
     EXPECT_EQ(maturity, inst.maturity());
     EXPECT_EQ(0, inst.strike_price());
+}
+
+TEST(ut_instrument_impl, future_underlying) {
+    underlying_impl prod { exchange_type::CFFEX, product_type::FUTURE, "abc" };
+    prod.set_currency(currency_type::CNH);
+    prod.set_lot_size(10);
+    prod.set_multiplier(100);
+    prod.set_tiktable_id(1);
+    prod.set_schedule_id(2);
+    instrument_impl inst { prod, date(2021, 3, 4) };
+
+    auto underlying = inst.underlying();
+    EXPECT_EQ(prod.name(), underlying.name());
+    EXPECT_EQ(prod.type(), underlying.type());
+    EXPECT_EQ(prod.exchange(), underlying.exchange());
+    EXPECT_EQ(prod.currency(), underlying.currency());
+    EXPECT_EQ(prod.lot_size(), underlying.lot_size());
+    EXPECT_EQ(prod.multiplier(), underlying.multiplier());
+    EXPECT_EQ(prod.tiktable_id(), underlying.tiktable_id());
+    EXPECT_EQ(prod.schedule_id(), underlying.schedule_id());
 }
 
 TEST(ut_instrument_impl, options) {

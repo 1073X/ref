@@ -28,8 +28,8 @@ TEST(ut_phase_type, variant) {
     // out of range
     EXPECT_EQ(phase_type::MAX, variant { +"unknown" }.get<phase_type>());
     EXPECT_EQ(phase_type::MAX, variant { -1 }.get<phase_type>());
-    EXPECT_EQ(phase_type::MAX,
-              variant { static_cast<uint32_t>(phase_type::MAX) + 1 }.get<phase_type>());
+    EXPECT_EQ(
+        phase_type::MAX, variant { static_cast<uint32_t>(phase_type::MAX) + 1 }.get<phase_type>());
 }
 
 TEST(ut_phase_type, to_string) {

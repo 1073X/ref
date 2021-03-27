@@ -1,14 +1,18 @@
 #pragma once
 
+#include <cmath>    // std::pow, std::round
+#include <com/enum.hpp>
+#include <com/fatal_error.hpp>
+#include <log/log.hpp>
+#include <sstream>
 #include <time/date.hpp>
 
-#include "ref/exchange_type.hpp"
-#include "ref/product_type.hpp"
+#include "ref/symbol.hpp"
 
 namespace miu::ref::details {
 
 static uint32_t constexpr base_year = 2019;
-static double const max_strike      = std::pow(2, 24);
+static double const MAX_STRIKE      = std::pow(2, 24);
 static char constexpr delimiter { '/' };
 
 union layout {
@@ -39,21 +43,21 @@ union layout {
 };
 static_assert(sizeof(uint64_t) == sizeof(layout));
 
-auto create_layout(exchange_type exchange, product_type type) {
+inline auto create_layout(exchange_type exchange, product_type type) {
     layout lay;
     lay.gen.exchange = static_cast<uint64_t>(exchange) & 0xFF;
     lay.gen.type     = static_cast<uint64_t>(type) & 0x0F;
     return lay;
 }
 
-uint64_t make_strike(double strike) {
+inline uint64_t make_strike(double strike) {
     auto val = strike;
 
-    if (val > max_strike) {
+    if (val > MAX_STRIKE) {
         FATAL_ERROR<std::overflow_error>("ref SYM strike price overflow", strike);
     }
 
-    while (val * 10 < max_strike) {
+    while (val * 10 < MAX_STRIKE) {
         val *= 10;
     }
 
@@ -92,7 +96,7 @@ void set_maturity(T& t, time::date val) {
     t.maturity_mon       = mon;
 }
 
-uint64_t encode_name(std::string_view str, uint32_t bytes) {
+inline uint64_t encode_name(std::string_view str, uint32_t bytes) {
     if (str.size() > bytes) {
         FATAL_ERROR<std::overflow_error>("ref SYM name overflow", str, ">", bytes);
     }
@@ -104,7 +108,7 @@ uint64_t encode_name(std::string_view str, uint32_t bytes) {
     return val;
 }
 
-symbol from_string(std::string_view str) noexcept try {
+inline symbol from_string(std::string_view str) noexcept try {
     auto make_maturity = [](std::string_view str) -> time::date {
         if (str.size() != 4) {
             FATAL_ERROR<std::invalid_argument>("ref SYM invalid maturity");

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/robin_hood_map.hpp"
+#include "source/lib/map/robin_hood_map.hpp"
 
 struct hash {
     auto operator()(uint64_t const (&key)[2]) const { return key[0]; }

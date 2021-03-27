@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/json_source.hpp"
+#include "source/bin/loadref/json_source.hpp"
 
 using namespace miu::ref;
 

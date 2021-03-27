@@ -7,6 +7,7 @@
 
 #include "ref/database.hpp"
 #include "ref/reg_var_str.hpp"
+#include "source/bin/loadref/loader.hpp"
 
 using namespace miu::ref;
 
@@ -83,13 +84,13 @@ struct ut_database : public testing::Test {
 };
 
 TEST_F(ut_database, load) {
-    auto db = database::load("ut_database.json");
+    auto db = miu::ref::loader::load("ut_database.json");
     EXPECT_EQ("ut_database", db.name());
     EXPECT_EQ(3U, db.size());
 }
 
 TEST_F(ut_database, open) {
-    database::load("ut_database.json");
+    miu::ref::loader::load("ut_database.json");
 
     auto db = database::open("ut_database", miu::shm::mode::READ);
     EXPECT_EQ("ut_database", db.name());
@@ -97,7 +98,7 @@ TEST_F(ut_database, open) {
 }
 
 TEST_F(ut_database, find_by_index) {
-    auto db = database::load("ut_database.json");
+    auto db = miu::ref::loader::load("ut_database.json");
 
     EXPECT_EQ(symbol("SSE/STOCK/600000"), db.find(0).symbol());
     EXPECT_EQ(symbol("SSE/FUTURE/B_FUT/2103"), db.find(1).symbol());
@@ -106,7 +107,7 @@ TEST_F(ut_database, find_by_index) {
 }
 
 TEST_F(ut_database, find_by_symbol) {
-    auto db = database::load("ut_database.json");
+    auto db = miu::ref::loader::load("ut_database.json");
 
     EXPECT_FALSE(db.find(symbol {}));
 
@@ -118,7 +119,7 @@ TEST_F(ut_database, find_by_symbol) {
 }
 
 TEST_F(ut_database, find_by_mkt_code) {
-    auto db = database::load("ut_database.json");
+    auto db = miu::ref::loader::load("ut_database.json");
 
     EXPECT_FALSE(db.find(symbol {}));
 
@@ -130,7 +131,7 @@ TEST_F(ut_database, find_by_mkt_code) {
 }
 
 TEST_F(ut_database, find_by_trd_code) {
-    auto db = database::load("ut_database.json");
+    auto db = miu::ref::loader::load("ut_database.json");
 
     EXPECT_FALSE(db.find(symbol {}));
 

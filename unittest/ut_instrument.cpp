@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "ref/instrument.hpp"
-#include "source/lib/layout.hpp"
+#include "source/lib/ref/layout.hpp"
 
 using namespace miu::ref;
 

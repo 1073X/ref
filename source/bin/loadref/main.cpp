@@ -5,9 +5,10 @@
 #include <log/log.hpp>
 #include <meta/info.hpp>
 
-#include "ref/database.hpp"
 #include "ref/reg_var_str.hpp"
 #include "ref/version.hpp"
+
+#include "loader.hpp"
 
 int32_t main(int32_t argc, const char* argv[]) try {
     miu::ref::reg_var_str();
@@ -31,7 +32,7 @@ int32_t main(int32_t argc, const char* argv[]) try {
             FATAL_ERROR<std::invalid_argument>("cann't find json [", json_file, "]");
         }
 
-        miu::ref::database::load(json_file);
+        miu::ref::loader::load(json_file);
 
         miu::log::dump();
     }
