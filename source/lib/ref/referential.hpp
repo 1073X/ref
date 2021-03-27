@@ -1,5 +1,6 @@
 #pragma once
 
+#include <com/to_string.hpp>
 #include <cstring>    // std::strncpy
 
 #include "ref/symbol.hpp"
@@ -44,3 +45,5 @@ class referential {
 };
 
 }    // namespace miu::ref
+
+DEF_TO_STRING(miu::ref::referential::code);

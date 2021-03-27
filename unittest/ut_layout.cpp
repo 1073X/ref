@@ -75,6 +75,16 @@ TEST_F(ut_layout, open) {
 
 TEST_F(ut_layout, structure) {
     auto layout = layout::make(buf, "ut_layout", 8, 2, 2);
+
+    // since lookup table doesn't accept duplicated key, we have to initialize the instruments;
+    underlying_impl underlying { exchange_type::SSE, product_type::STOCK, "stock" };
+    for (auto i = 0; i < 4; i++) {
+        auto name = "stk" + std::to_string(i);
+        auto inst = new (layout->instruments() + i) instrument_impl { underlying, name };
+        inst->set_mkt_code(name);
+        inst->set_trd_code(name);
+    }
+
     layout->restructure(4, 1, 1);
     EXPECT_EQ(4U, layout->instrument_count());
     EXPECT_EQ(1U, layout->tiktable_count());

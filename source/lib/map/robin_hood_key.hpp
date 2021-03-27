@@ -14,17 +14,17 @@ class robin_hood_key<T, 8> {
 
     robin_hood_key(T const& key) {
         auto src = (uint64_t const*)&key;
-        _value   = src[0];
+        _val[0]  = src[0];
     }
 
-    auto operator!=(T const& key) const {
-        auto rhs = (uint64_t const*)&key;
-        return _value != rhs[0];
-    }
-    auto operator==(T const& rhs) const { return !operator!=(rhs); }
+    auto operator!=(robin_hood_key const& rhs) const { return _val[0] != rhs._val[0]; }
+    auto operator==(robin_hood_key const& rhs) const { return !operator!=(rhs); }
+    auto operator!=(T const& rhs) const { return operator!=(*(robin_hood_key const*)&rhs); }
+
+    T const& get() const { return *(T const*)_val; }
 
   private:
-    uint64_t _value { 0 };
+    uint64_t _val[1] { 0 };
 };
 
 template<typename T>
@@ -33,20 +33,21 @@ class robin_hood_key<T, 16> {
     robin_hood_key() = default;
 
     robin_hood_key(T const& key) {
-        auto src  = (uint64_t const*)&key;
-        _val_low  = src[0];
-        _val_high = src[1];
+        auto src = (uint64_t const*)&key;
+        _val[0]  = src[0];
+        _val[1]  = src[1];
     }
 
-    auto operator!=(T const& key) const {
-        auto rhs = (uint64_t const*)&key;
-        return _val_low != rhs[0] || _val_high != rhs[1];
+    auto operator!=(robin_hood_key const& rhs) const {
+        return _val[0] != rhs._val[0] || _val[1] != rhs._val[1];
     }
-    auto operator==(T const& rhs) const { return !operator!=(rhs); }
+    auto operator==(robin_hood_key const& rhs) const { return !operator!=(rhs); }
+    auto operator!=(T const& rhs) const { return operator!=(*(robin_hood_key const*)&rhs); }
+
+    T const& get() const { return *(T const*)_val; }
 
   private:
-    uint64_t _val_low { 0 };
-    uint64_t _val_high { 0 };
+    uint64_t _val[2] { 0, 0 };
 };
 
 }    // namespace miu::ref
