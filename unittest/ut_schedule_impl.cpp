@@ -2,7 +2,7 @@
 
 #include <time/time.hpp>
 
-#include "source/lib/schedule_impl.hpp"
+#include "source/lib/ref/schedule_impl.hpp"
 
 using miu::ref::phase_type;
 using miu::time::daytime;

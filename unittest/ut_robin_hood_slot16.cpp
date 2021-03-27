@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/robin_hood_slot.hpp"
+#include "source/lib/map/robin_hood_slot.hpp"
 
 using slot_type = miu::ref::robin_hood_slot<uint64_t[2], 16>;
 static_assert(sizeof(slot_type) == 32);

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>    // std::max
+#include <cassert>
+
 #include "robin_hood_hash.hpp"
 #include "robin_hood_slot.hpp"
 
@@ -24,7 +27,7 @@ class robin_hood_map {
         return map;
     }
 
-    static auto open(const void* buf, std::size_t len) {
+    static auto open(const void* buf, std::size_t /*len*/) {
         return reinterpret_cast<robin_hood_map const*>(buf);
     }
 
@@ -79,4 +82,3 @@ class robin_hood_map {
 };
 
 }    // namespace miu::ref
-

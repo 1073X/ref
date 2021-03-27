@@ -36,6 +36,16 @@ class instrument_impl : public referential {
     uint32_t tiktable_id() const { return _tiktable_id; }
     uint32_t schedule_id() const { return _schedule_id; }
 
+    auto underlying() const {
+        underlying_impl underlying { exchange(), type(), name() };
+        underlying.set_currency(currency());
+        underlying.set_lot_size(lot_size());
+        underlying.set_multiplier(multiplier());
+        underlying.set_tiktable_id(tiktable_id());
+        underlying.set_schedule_id(schedule_id());
+        return underlying;
+    }
+
   private:
     template<typename... ARGS>
     instrument_impl(int, underlying_impl const& prod, ARGS&&... args)

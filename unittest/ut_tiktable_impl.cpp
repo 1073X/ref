@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/tiktable_impl.hpp"
+#include "source/lib/ref/tiktable_impl.hpp"
 
 using miu::ref::price;
 

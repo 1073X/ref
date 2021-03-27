@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/layout.hpp"
+#include "source/lib/ref/layout.hpp"
 
 using namespace miu::ref;
 
@@ -14,6 +14,8 @@ TEST_F(ut_layout, resolve_size) {
              // symbol map
              + 17 * 16
              // mkt_code map
+             + 17 * 32
+             // trd_code map
              + 17 * 32;
 
     EXPECT_EQ(exp, layout::resolve_size(8, 2, 2));
@@ -77,6 +79,4 @@ TEST_F(ut_layout, structure) {
     EXPECT_EQ(4U, layout->instrument_count());
     EXPECT_EQ(1U, layout->tiktable_count());
     EXPECT_EQ(1U, layout->schedule_count());
-    EXPECT_EQ(0x0000000400010001, layout->structure());
 }
-

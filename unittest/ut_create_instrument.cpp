@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "source/lib/json_source.hpp"
+#include "source/bin/loadref/json_source.hpp"
 
 using namespace miu::ref;
 
@@ -99,4 +99,3 @@ TEST(ut_create_instrument, invalid_strike) {
     // missing
     EXPECT_ANY_THROW(json_source::create(&instrument, json, underlying));
 }
-

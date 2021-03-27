@@ -85,7 +85,7 @@ std::string symbol::name() const {
     char buf[8] {};
     auto decode_name = [&](uint64_t val, uint32_t bytes) {
         for (auto i = 0U; i < bytes; i++) {
-            buf[i] = (val >> (i * 7)) & 0x7F;
+            buf[i] = char((val >> (i * 7)) & 0x7F);
         }
     };
 
@@ -107,24 +107,24 @@ std::string symbol::name() const {
 }
 
 std::string symbol::str() const {
-    static const com::strcat::delimiter delimiter { { details::delimiter } };
+    static const com::strcat::delimiter DELIMITER { { details::delimiter } };
 
     auto layout = details::layout { _value };
 
-    auto ret = com::strcat { exchange(), type(), name(), delimiter }.str();
+    auto ret = com::strcat { exchange(), type(), name(), DELIMITER }.str();
     switch (type()) {
     case product_type::PUT:
     case product_type::CALL: {
         auto contract = details::contract(layout.opt);
         if (!contract.empty()) {
-            ret = com::strcat { ret, (uint64_t)layout.opt.strike, contract, delimiter }.str();
+            ret = com::strcat { ret, (uint64_t)layout.opt.strike, contract, DELIMITER }.str();
         }
     } break;
 
     case product_type::FUTURE: {
         auto contract = details::contract(layout.fut);
         if (!contract.empty()) {
-            ret = com::strcat { ret, contract, delimiter }.str();
+            ret = com::strcat { ret, contract, DELIMITER }.str();
         }
     } break;
 
@@ -136,4 +136,3 @@ std::string symbol::str() const {
 }
 
 }    // namespace miu::ref
-

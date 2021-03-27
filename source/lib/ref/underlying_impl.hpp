@@ -48,6 +48,8 @@ class underlying_impl : public referential {
     auto schedule_id() const { return _schedule_id; }
     auto set_schedule_id(uint16_t v) { _schedule_id = v; }
 
+    auto paddings() const { return _paddings; }
+
   private:
     int32_t _multiplier { 0 };
     int32_t _lot_size { 0 };
