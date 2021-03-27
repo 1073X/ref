@@ -12,11 +12,19 @@ class json_reader {
     auto empty() const { return _json.empty(); }
     auto items() const { return _json.items(); }
 
-    auto get_string(std::string const& key) const {
+    auto get_string(std::string const& key, std::string const& def_val) const {
         if (!_json.contains(key) || !_json[key].is_string()) {
-            throw std::invalid_argument("ILL_STR_VAL [" + key + "]");
+            return def_val;
         }
         return _json[key].get<std::string>();
+    }
+
+    auto get_string(std::string const& key) const {
+        auto val = get_string(key, "__");
+        if (val == "__") {
+            throw std::invalid_argument("ILL_STR_VAL [" + key + "]");
+        }
+        return val;
     }
 
     auto get_number(std::string const& key) const {

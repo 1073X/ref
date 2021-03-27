@@ -1,5 +1,13 @@
 #include <gtest/gtest.h>
 
+namespace miu::com {
+
+std::string to_string(uint64_t const (&v)[2]) {
+    return std::to_string(v[0]) + ' ' + std::to_string(v[1]);
+}
+
+}    // namespace miu::com
+
 #include "source/lib/map/robin_hood_map.hpp"
 
 struct hash {
@@ -47,6 +55,21 @@ TEST(ut_robin_hood_map, insert_and_lookup) {
     EXPECT_EQ(-1U, map->lookup(key3));
     uint64_t key4[] { 9, 0 };
     EXPECT_EQ(-1U, map->lookup(key4));
+}
+
+TEST(ut_robin_hood_map, duplicated) {
+    char buf[32 * 9] {};
+    auto map = map_type::make(buf, sizeof(buf));
+
+    uint64_t key1[] { 1, 0 };
+    map->insert(key1, 1);
+    EXPECT_ANY_THROW(map->insert(key1, 2));
+
+    uint64_t key2[] { 9, 0 };
+    EXPECT_NO_THROW(map->insert(key2, 2));
+
+    EXPECT_ANY_THROW(map->insert(key1, 3));
+    EXPECT_ANY_THROW(map->insert(key2, 3));
 }
 
 TEST(ut_robin_hood_map, collision) {

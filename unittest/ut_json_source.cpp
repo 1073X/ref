@@ -50,12 +50,10 @@ struct ut_json_source : public testing::Test {
         miu::com::json inst1;
         inst1["name"]                             = "600000";
         inst1["mkt_code"]                         = "600000M";
-        inst1["trd_code"]                         = "600000T";
         json["instruments"]["SSE/STOCK/A_STK"][0] = inst1;
 
         miu::com::json inst2;
         inst2["maturity"]                          = "20210306";
-        inst2["mkt_code"]                          = "B_FUT_M";
         inst2["trd_code"]                          = "B_FUT_T";
         json["instruments"]["SSE/FUTURE/B_FUT"][0] = inst2;
 
@@ -129,4 +127,22 @@ TEST_F(ut_json_source, layout) {
     EXPECT_EQ(source.tiktable_count(), layout->tiktable_count());
     EXPECT_EQ(source.schedule_count(), layout->schedule_count());
     EXPECT_EQ(source.instrument_count(), layout->instrument_count());
+}
+
+TEST_F(ut_json_source, general_code) {
+    json_source source { json };
+
+    char buf[4096] {};
+    auto layout = layout::make(
+        buf, "name", source.instrument_count(), source.tiktable_count(), source.schedule_count());
+
+    source.fill(layout);
+
+    auto inst0 = layout->instruments();
+    EXPECT_STREQ("600000M", inst0->mkt_code().value);
+    EXPECT_STREQ("600000M", inst0->trd_code().value);
+
+    auto inst1 = layout->instruments() + 1;
+    EXPECT_STREQ("B_FUT_T", inst1->mkt_code().value);
+    EXPECT_STREQ("B_FUT_T", inst1->trd_code().value);
 }

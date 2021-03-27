@@ -2,6 +2,7 @@
 
 #include <algorithm>    // std::max
 #include <cassert>
+#include <com/fatal_error.hpp>
 
 #include "robin_hood_hash.hpp"
 #include "robin_hood_slot.hpp"
@@ -58,6 +59,10 @@ class robin_hood_map {
 
     void insert(slot_type* new_s, uint32_t idx) {
         while (new_s->psl() <= at(idx)->psl()) {
+            if (new_s->key() == at(idx)->key()) {
+                FATAL_ERROR("duplicated key", new_s->key().get());
+            }
+
             new_s->inc_psl();
             idx++;
         }

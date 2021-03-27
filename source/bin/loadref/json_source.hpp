@@ -147,10 +147,17 @@ class json_source {
         } break;
         }
 
-        auto mkt_code = reader.get_string("mkt_code");
-        instrument->set_mkt_code(mkt_code);
+        auto mkt_code = reader.get_string("mkt_code", "");
+        auto trd_code = reader.get_string("trd_code", "");
 
-        auto trd_code = reader.get_string("trd_code");
+        if (mkt_code.empty()) {
+            mkt_code = trd_code;
+        }
+        if (trd_code.empty()) {
+            trd_code = mkt_code;
+        }
+
+        instrument->set_mkt_code(mkt_code);
         instrument->set_trd_code(trd_code);
 
     } catch (std::exception const& err) {
