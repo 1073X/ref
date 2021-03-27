@@ -4,7 +4,8 @@
             {
                 "maturity": "20210324",
                 "mkt_code": "general_code",
-                "strike": 1.0
+                "trd_code": "general_code",
+                "strike_price": 1.0
             }
         ],
         "SHFE/FUTURE/CU": [
@@ -29,11 +30,11 @@
     },
     "schedules": {
         "th01": {
-            "00:00:00": "OPEN",
-            "03:00:00": "CLOSE",
-            "09:00:00": "OPEN",
-            "15:00:00": "CLOSE",
-            "21:00:00": "OPEN"
+            "00:00:00.000": "OPEN",
+            "03:00:00.000": "CLOSE",
+            "09:00:00.000": "OPEN",
+            "15:00:00.000": "CLOSE",
+            "21:00:00.000": "OPEN"
         }
     },
     "tiktables": {
