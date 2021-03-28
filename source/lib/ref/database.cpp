@@ -1,6 +1,8 @@
 
 #include "ref/database.hpp"
 
+#include "source/lib/md5/md5.hpp"
+
 #include "layout.hpp"
 
 namespace miu::ref {
@@ -40,6 +42,17 @@ instrument database::find_by_mkt_code(std::string_view code) const {
 
 instrument database::find_by_trd_code(std::string_view code) const {
     return find(layout::open(_buf.data())->trd_map()->lookup(code));
+}
+
+signature database::signature() const {
+    md5 decoder;
+    for (auto i = 0U; i < size(); i++) {
+        auto str = com::to_string(find(i).symbol());
+        decoder.update(str.data(), str.size());
+    }
+    decoder.finalize();
+
+    return { decoder.digest() };
 }
 
 }    // namespace miu::ref

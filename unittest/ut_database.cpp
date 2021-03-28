@@ -141,3 +141,12 @@ TEST_F(ut_database, find_by_trd_code) {
 
     EXPECT_FALSE(db.find_by_trd_code("not_exists"));
 }
+
+TEST_F(ut_database, signature) {
+    auto db = miu::ref::loader::load("ut_database.json");
+
+    auto signature = db.signature();
+    std::cout << miu::com::to_string(signature) << std::endl;
+
+    EXPECT_EQ(signature, db.signature());
+}
