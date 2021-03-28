@@ -6,6 +6,7 @@ namespace miu::ref {
 
 enum struct exchange_type : uint16_t {
     UNDEF = 0,
+    STUB,
 
     FOREX,    // LingLuGu forex
     SSE,

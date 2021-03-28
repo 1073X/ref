@@ -32,7 +32,7 @@ instrument database::find(uint16_t id) const {
     return {};
 }
 
-instrument database::find(symbol sym) const {
+instrument database::find(symbol const& sym) const {
     return find(layout::open(_buf.data())->symbol_map()->lookup(sym));
 }
 

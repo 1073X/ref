@@ -34,12 +34,16 @@ delivery:
         - mkdir -p $INC_PATH
         - rm -fr $INC_PATH/ref
         - cp -frv ./include/ref $INC_PATH
+        - rm -f $INC_PATH/stub/ref*
+        - cp -frv ./include/stub $INC_PATH
 
         - mkdir -p $DBG_PATH
         - cp -fv debug/libref.a $DBG_PATH
+        - cp -fv debug/librefstub.a $DBG_PATH
 
         - mkdir -p $REL_PATH
         - cp -fv release/libref.a $REL_PATH
+        - cp -fv release/librefstub.a $REL_PATH
 
         - mkdir -p $UT_PATH
         - cp -fv release/ut_ref $UT_PATH

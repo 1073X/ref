@@ -7,7 +7,7 @@
 
 #include "ref/database.hpp"
 #include "ref/reg_var_str.hpp"
-#include "source/bin/loadref/loader.hpp"
+#include "source/lib/loadref/loader.hpp"
 
 using namespace miu::ref;
 
@@ -16,7 +16,7 @@ struct ut_database : public testing::Test {
         reg_var_str();
 
         using miu::log::severity;
-        miu::log::reset(severity::DEBUG, 1024);
+        // miu::log::reset(severity::DEBUG, 1024);
 
         ///
         json["tiktables"]["tk0"]["0.0"] = 0.5;
@@ -82,6 +82,12 @@ struct ut_database : public testing::Test {
 
     miu::com::json json;
 };
+
+TEST_F(ut_database, default) {
+    auto db = miu::ref::database {};
+    EXPECT_FALSE(db);
+    EXPECT_EQ(false, db);
+}
 
 TEST_F(ut_database, load) {
     auto db = miu::ref::loader::load("ut_database.json");
