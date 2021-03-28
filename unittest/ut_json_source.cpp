@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "ref/reg_var_str.hpp"
-#include "source/bin/loadref/json_source.hpp"
+#include "source/lib/loadref/json_source.hpp"
 
 using namespace miu::ref;
 

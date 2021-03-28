@@ -7,8 +7,7 @@
 
 #include "ref/reg_var_str.hpp"
 #include "ref/version.hpp"
-
-#include "loader.hpp"
+#include "source/lib/loadref/loader.hpp"
 
 int32_t main(int32_t argc, const char* argv[]) try {
     miu::ref::reg_var_str();
