@@ -21,12 +21,16 @@ std::string_view database::name() const {
     return layout::open(_buf.data())->name();
 }
 
-uint32_t database::size() const {
-    return layout::open(_buf.data())->instrument_count();
+uint32_t database::num_of_instrument() const {
+    return layout::open(_buf.data())->num_of_instrument();
+}
+
+uint32_t database::max_of_instrument() const {
+    return layout::open(_buf.data())->max_of_instrument();
 }
 
 instrument database::find(uint16_t id) const {
-    if (LIKELY(id < size())) {
+    if (LIKELY(id < num_of_instrument())) {
         return { layout::open(_buf.data()), id };
     }
     return {};
@@ -46,7 +50,7 @@ instrument database::find_by_trd_code(std::string_view code) const {
 
 signature database::signature() const {
     md5 decoder;
-    for (auto i = 0U; i < size(); i++) {
+    for (auto i = 0U; i < num_of_instrument(); i++) {
         auto str = com::to_string(find(i).symbol());
         decoder.update(str.data(), str.size());
     }

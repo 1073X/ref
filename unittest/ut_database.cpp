@@ -92,7 +92,8 @@ TEST_F(ut_database, default) {
 TEST_F(ut_database, load) {
     auto db = miu::ref::loader::load("ut_database.json");
     EXPECT_EQ("ut_database", db.name());
-    EXPECT_EQ(3U, db.size());
+    EXPECT_EQ(3U, db.num_of_instrument());
+    EXPECT_EQ(7U, db.max_of_instrument());
 }
 
 TEST_F(ut_database, open) {
@@ -100,7 +101,7 @@ TEST_F(ut_database, open) {
 
     auto db = database::open("ut_database", miu::shm::mode::READ);
     EXPECT_EQ("ut_database", db.name());
-    EXPECT_EQ(3U, db.size());
+    EXPECT_EQ(3U, db.num_of_instrument());
 }
 
 TEST_F(ut_database, find_by_index) {

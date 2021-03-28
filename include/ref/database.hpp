@@ -20,7 +20,8 @@ class database {
     operator bool() const { return !operator!(); }
 
     std::string_view name() const;
-    uint32_t size() const;
+    uint32_t max_of_instrument() const;
+    uint32_t num_of_instrument() const;
 
     // find by id
     instrument find(uint16_t id) const;

@@ -17,9 +17,9 @@ class loader {
         auto json   = com::json::parse(std::ifstream(file));
         auto source = json_source { json };
 
-        auto instrument_cap = source.instrument_count() + 4;
-        auto tiktable_cap   = source.tiktable_count() + 4;
-        auto schedule_cap   = source.schedule_count() + 4;
+        auto instrument_cap = source.num_of_instrument() + 4;
+        auto tiktable_cap   = source.num_of_tiktable() + 4;
+        auto schedule_cap   = source.num_of_schedule() + 4;
         auto buffer_size    = layout::resolve_size(instrument_cap, tiktable_cap, schedule_cap);
 
         if (name.empty()) {
