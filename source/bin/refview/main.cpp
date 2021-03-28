@@ -35,13 +35,13 @@ int32_t main(int32_t argc, const char* argv[]) try {
         miu::ref::json_builder builder;
 
         auto layout = miu::ref::layout::open(buf.data());
-        for (auto i = 0U; i < layout->instrument_count(); i++) {
+        for (auto i = 0U; i < layout->num_of_instrument(); i++) {
             builder.append(layout->instruments() + i);
         }
-        for (auto i = 0U; i < layout->tiktable_count(); i++) {
+        for (auto i = 0U; i < layout->num_of_tiktable(); i++) {
             builder.append(layout->tiktables() + i);
         }
-        for (auto i = 0U; i < layout->schedule_count(); i++) {
+        for (auto i = 0U; i < layout->num_of_schedule(); i++) {
             builder.append(layout->schedules() + i);
         }
 

@@ -27,18 +27,18 @@ TEST_F(ut_layout, make) {
 
     EXPECT_EQ("ut_layout", layout->name());
 
-    EXPECT_EQ(8U, layout->instrument_capacity());
-    EXPECT_EQ(0U, layout->instrument_count());
+    EXPECT_EQ(8U, layout->max_of_instrument());
+    EXPECT_EQ(0U, layout->num_of_instrument());
     auto schedule_addr = buf + CACHE_LINE;
     EXPECT_EQ(schedule_addr, (const char*)layout->schedules());
 
-    EXPECT_EQ(2U, layout->tiktable_capacity());
-    EXPECT_EQ(0U, layout->tiktable_count());
+    EXPECT_EQ(2U, layout->max_of_tiktable());
+    EXPECT_EQ(0U, layout->num_of_tiktable());
     auto instrument_addr = buf + CACHE_LINE * 3;
     EXPECT_EQ(instrument_addr, (const char*)layout->instruments());
 
-    EXPECT_EQ(2U, layout->schedule_capacity());
-    EXPECT_EQ(0U, layout->schedule_count());
+    EXPECT_EQ(2U, layout->max_of_schedule());
+    EXPECT_EQ(0U, layout->num_of_schedule());
     auto tiktable_addr = buf + CACHE_LINE * 11;
     EXPECT_EQ(tiktable_addr, (const char*)layout->tiktables());
 
@@ -60,15 +60,15 @@ TEST_F(ut_layout, open) {
 
     EXPECT_EQ("ut_layout", layout->name());
 
-    EXPECT_EQ(8U, layout->instrument_capacity());
+    EXPECT_EQ(8U, layout->max_of_instrument());
     auto schedule_addr = buf + CACHE_LINE;
     EXPECT_EQ(schedule_addr, (const char*)layout->schedules());
 
-    EXPECT_EQ(2U, layout->tiktable_capacity());
+    EXPECT_EQ(2U, layout->max_of_tiktable());
     auto instrument_addr = buf + CACHE_LINE * 3;
     EXPECT_EQ(instrument_addr, (const char*)layout->instruments());
 
-    EXPECT_EQ(2U, layout->schedule_capacity());
+    EXPECT_EQ(2U, layout->max_of_schedule());
     auto tiktable_addr = buf + CACHE_LINE * 11;
     EXPECT_EQ(tiktable_addr, (const char*)layout->tiktables());
 }
@@ -86,7 +86,7 @@ TEST_F(ut_layout, structure) {
     }
 
     layout->restructure(4, 1, 1);
-    EXPECT_EQ(4U, layout->instrument_count());
-    EXPECT_EQ(1U, layout->tiktable_count());
-    EXPECT_EQ(1U, layout->schedule_count());
+    EXPECT_EQ(4U, layout->num_of_instrument());
+    EXPECT_EQ(1U, layout->num_of_tiktable());
+    EXPECT_EQ(1U, layout->num_of_schedule());
 }

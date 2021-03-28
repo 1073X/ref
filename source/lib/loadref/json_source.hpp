@@ -17,10 +17,10 @@ class json_source {
     json_source(com::json const& json)
         : _json(json) {}
 
-    auto tiktable_count() const { return _json["tiktables"].size(); }
-    auto schedule_count() const { return _json["schedules"].size(); }
-    auto underlying_count() const { return _json["underlyings"].size(); }
-    auto instrument_count() const {
+    auto num_of_tiktable() const { return _json["tiktables"].size(); }
+    auto num_of_schedule() const { return _json["schedules"].size(); }
+    auto num_of_underlying() const { return _json["underlyings"].size(); }
+    auto num_of_instrument() const {
         uint32_t count = 0;
         for (auto const& [key, val] : _json["instruments"].items()) {
             count += val.size();
@@ -167,15 +167,15 @@ class json_source {
 
     auto fill(class layout* layout) const {
         // TBD: verify layout capacity
-        assert(layout->tiktable_capacity() >= tiktable_count() && "tiktable overflow");
-        assert(layout->schedule_capacity() >= schedule_count() && "schedule overflow");
-        assert(layout->instrument_capacity() >= instrument_count() && "instrument overflow");
+        assert(layout->max_of_tiktable() >= num_of_tiktable() && "tiktable overflow");
+        assert(layout->max_of_schedule() >= num_of_schedule() && "schedule overflow");
+        assert(layout->max_of_instrument() >= num_of_instrument() && "instrument overflow");
 
-        auto tiktable_ids = fill(layout->tiktables(), layout->tiktable_capacity());
-        auto schedule_ids = fill(layout->schedules(), layout->schedule_capacity());
-        std::unique_ptr<underlying_impl[]> underlyings { new underlying_impl[underlying_count()] };
+        auto tiktable_ids = fill(layout->tiktables(), layout->max_of_tiktable());
+        auto schedule_ids = fill(layout->schedules(), layout->max_of_schedule());
+        std::unique_ptr<underlying_impl[]> underlyings { new underlying_impl[num_of_underlying()] };
         auto underlying_ids = fill(
-            underlyings.get(), underlying_count(), tiktable_ids, schedule_ids);
+            underlyings.get(), num_of_underlying(), tiktable_ids, schedule_ids);
 
         id_map<symbol> instrument_ids;
         for (auto const& [key, val] : _json["instruments"].items()) {
@@ -199,7 +199,7 @@ class json_source {
             }
         }
 
-        layout->restructure(instrument_count(), tiktable_count(), schedule_count());
+        layout->restructure(num_of_instrument(), num_of_tiktable(), num_of_schedule());
         return instrument_ids;
     }
 

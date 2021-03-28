@@ -74,7 +74,7 @@ struct ut_json_source : public testing::Test {
 
 TEST_F(ut_json_source, tiktable) {
     json_source source { json };
-    EXPECT_EQ(2U, source.tiktable_count());
+    EXPECT_EQ(2U, source.num_of_tiktable());
 
     tiktable_impl buf[4];
     auto ids = source.fill(buf, sizeof(buf));
@@ -85,7 +85,7 @@ TEST_F(ut_json_source, tiktable) {
 
 TEST_F(ut_json_source, schedule) {
     json_source source { json };
-    EXPECT_EQ(2U, source.schedule_count());
+    EXPECT_EQ(2U, source.num_of_schedule());
 
     schedule_impl buf[4];
     auto ids = source.fill(buf, sizeof(buf));
@@ -96,7 +96,7 @@ TEST_F(ut_json_source, schedule) {
 
 TEST_F(ut_json_source, underlying) {
     json_source source { json };
-    EXPECT_EQ(3U, source.underlying_count());
+    EXPECT_EQ(3U, source.num_of_underlying());
 
     std::map<std::string, uint16_t> tiktable_ids { { "tk0", 100 }, { "tk1", 99 } };
     std::map<std::string, uint16_t> schedule_ids { { "th0", 100 }, { "th1", 99 } };
@@ -114,8 +114,11 @@ TEST_F(ut_json_source, layout) {
     json_source source { json };
 
     char buf[4096] {};
-    auto layout = layout::make(
-        buf, "name", source.instrument_count(), source.tiktable_count(), source.schedule_count());
+    auto layout = layout::make(buf,
+                               "name",
+                               source.num_of_instrument(),
+                               source.num_of_tiktable(),
+                               source.num_of_schedule());
 
     auto ids = source.fill(layout);
     EXPECT_EQ(3U, ids.size());
@@ -124,17 +127,20 @@ TEST_F(ut_json_source, layout) {
     EXPECT_EQ(1U, ids[symbol("SSE/FUTURE/B_FUT/2103")]);
     EXPECT_EQ(2U, ids[symbol("SSE/PUT/OPT/12000000/2103")]);
 
-    EXPECT_EQ(source.tiktable_count(), layout->tiktable_count());
-    EXPECT_EQ(source.schedule_count(), layout->schedule_count());
-    EXPECT_EQ(source.instrument_count(), layout->instrument_count());
+    EXPECT_EQ(source.num_of_tiktable(), layout->num_of_tiktable());
+    EXPECT_EQ(source.num_of_schedule(), layout->num_of_schedule());
+    EXPECT_EQ(source.num_of_instrument(), layout->num_of_instrument());
 }
 
 TEST_F(ut_json_source, general_code) {
     json_source source { json };
 
     char buf[4096] {};
-    auto layout = layout::make(
-        buf, "name", source.instrument_count(), source.tiktable_count(), source.schedule_count());
+    auto layout = layout::make(buf,
+                               "name",
+                               source.num_of_instrument(),
+                               source.num_of_tiktable(),
+                               source.num_of_schedule());
 
     source.fill(layout);
 
