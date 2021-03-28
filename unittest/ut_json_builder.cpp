@@ -189,4 +189,3 @@ TEST_F(ut_json_builder, append_options) {
     EXPECT_EQ("TK01", json["underlyings"]["TSE/PUT/abc"]["tiktable"]);
     EXPECT_EQ("TH00", json["underlyings"]["TSE/PUT/abc"]["schedule"]);
 }
-

@@ -4,6 +4,7 @@
 #include <shm/buffer.hpp>
 
 #include "instrument.hpp"
+#include "signature.hpp"
 
 namespace miu::ref {
 
@@ -21,6 +22,8 @@ class database {
     instrument find(symbol) const;
     instrument find_by_mkt_code(std::string_view) const;
     instrument find_by_trd_code(std::string_view) const;
+
+    class signature signature() const;
 
   private:
     shm::buffer _buf;
