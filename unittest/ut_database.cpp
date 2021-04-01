@@ -102,6 +102,16 @@ TEST_F(ut_database, open) {
     auto db = database::open("ut_database", miu::shm::mode::READ);
     EXPECT_EQ("ut_database", db.name());
     EXPECT_EQ(3U, db.num_of_instrument());
+
+    // move copy
+    database db2 { std::move(db) };
+    EXPECT_TRUE(db2);
+    EXPECT_FALSE(db);
+
+    database db3;
+    db3 = std::move(db2);
+    EXPECT_TRUE(db3);
+    EXPECT_FALSE(db2);
 }
 
 TEST_F(ut_database, find_by_index) {
