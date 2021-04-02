@@ -103,15 +103,15 @@ TEST_F(ut_database, open) {
     EXPECT_EQ("ut_database", db.name());
     EXPECT_EQ(3U, db.num_of_instrument());
 
-    // move copy
-    database db2 { std::move(db) };
+    // copy
+    database db2 { db };
     EXPECT_TRUE(db2);
-    EXPECT_FALSE(db);
+    EXPECT_TRUE(db);
 
     database db3;
-    db3 = std::move(db2);
+    db3 = db2;
     EXPECT_TRUE(db3);
-    EXPECT_FALSE(db2);
+    EXPECT_TRUE(db2);
 }
 
 TEST_F(ut_database, find_by_index) {

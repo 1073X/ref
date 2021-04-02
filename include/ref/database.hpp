@@ -14,7 +14,7 @@ class database {
 
   public:
     database() = default;
-    explicit database(shm::buffer&&);
+    explicit database(shm::buffer const&);
 
     auto operator!() const { return !_buf; }
     operator bool() const { return !operator!(); }
