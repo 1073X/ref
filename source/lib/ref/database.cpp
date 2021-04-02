@@ -10,11 +10,11 @@ namespace miu::ref {
 database database::open(std::string_view name, shm::mode mode) {
     auto buf = shm::buffer { { name, "ref" }, mode };
     // TBD: verify database
-    return database { std::move(buf) };
+    return database { buf };
 }
 
-database::database(shm::buffer&& buf)
-    : _buf(std::move(buf)) {
+database::database(shm::buffer const& buf)
+    : _buf(buf) {
 }
 
 std::string_view database::name() const {

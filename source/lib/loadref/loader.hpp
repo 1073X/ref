@@ -30,7 +30,7 @@ class loader {
         auto layout = layout::make(buf.data(), name, instrument_cap, tiktable_cap, schedule_cap);
         source.fill(layout);
 
-        return database { std::move(buf) };
+        return database { buf };
     }
 };
 
