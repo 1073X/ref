@@ -61,6 +61,8 @@ class json_builder {
             if (is_options(inst->type())) {
                 data["strike_price"] = static_cast<double>(inst->strike_price());
             }
+        } else {
+            data["name"] = inst->name();
         }
 
         _json["instruments"][com::to_string(underlying_symbol)].push_back(data);
